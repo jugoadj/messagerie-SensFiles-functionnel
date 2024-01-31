@@ -40,10 +40,17 @@ var  socket, selectedChatCompare;
 
     const [file, setFile] = useState(null);
     const fileInputRef = useRef(null);
+    const [fileName, setFileName] = React.useState(""); 
+    const [isOnline, setIsOnline] = React.useState(false);
+
+
 
     const handleFileChange = (event) => {
   const file = event.target.files[0];
-  setNewMessage(file); // Stockez l'objet File dans newMessage
+  setNewMessage(file); // Continuez à stocker l'objet File dans newMessage
+  if (file) {
+    setFileName(file.name); // Mettez à jour fileName avec le nom du fichier
+  }
 };
 
     const uid = useContext(UidContext);
@@ -272,7 +279,19 @@ const handleSend = (event) => {
   };
 
  
+  const checkUserOnlineStatus = async (uid) => {
+  try {
+    const response = await axios.get(`${apiUrl}api/user/${uid}/online-status`);
+    return response.data.isOnline;
+  } catch (error) {
+    console.error('Failed to check user online status:', error);
+    return false;
+  }
+};
 
+React.useEffect(() => {
+  checkUserOnlineStatus(uid).then(setIsOnline);
+}, [uid]);
 
   
    
@@ -336,7 +355,11 @@ return (
     </div>
 
     <div className="chat-input"  >
-<input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} /> 
+<input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange}  /> 
+
+{newMessage instanceof File && 
+  <input type="text" value={fileName} readOnly style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '6px 12px' }} />
+}
 
 <input 
   className="input" 

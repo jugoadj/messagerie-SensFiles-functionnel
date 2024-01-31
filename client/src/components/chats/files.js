@@ -5,10 +5,14 @@ import axios from 'axios';
 import { useContext, useState, useEffect } from 'react';
 import { Box} from "@mui/material";
 import { GoX } from "react-icons/go";
+import React from 'react';
+
 
 
 
 const ChatFiles = ({ children , isOpen, onClose }) => {
+const [chatBackgroundColor, setChatBackgroundColor] = useState('#ffffff'); // Définit la couleur initiale du fond du chat sur blanc
+
 
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [messages, setMessages] = useState([]); 
@@ -95,83 +99,91 @@ const ChatFiles = ({ children , isOpen, onClose }) => {
 
     return (
 <>
-<span onClick={() => setIsOpen(isOpen)}>{children}</span>
-        {isOpen && (
-        <div className="drawer" >
-            <div className="drawer-overlay">
-                <div className="drawer-content">
-                <div className="modal-close-button-files">                
-                    <GoX className="close-icon" style={{ fontSize: '2em' }} onClick={onClose}/>
-                </div>
-                <div className="drawer-header">contenu multimedia</div>
+  <span onClick={() => setIsOpen(!isOpen)}>{children}</span>
+  {isOpen && (
+    <div className="drawer">
+      <div className="drawer-overlay">
+        <div className="drawer-content">
+          <div className="drawer-header">Contenu multimedia</div>
+          <div className="modal-close-button-files">
+            <GoX className="close-icon" style={{ fontSize: '2em' }} onClick={onClose} />
+          </div>
+          <div className="drawer-header">Images</div>
 
-                <div className="boxfiles">
-                    {selectedChat && messages.every(m => getFileType(m.file) !== 'image' && getFileType(m.file) !== 'video') ? (
-                            <Box
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            w="100%"
-                            h="100%"
-                            bg="#4E4F50"
-                            color={"white"}
-                            >
-                            <p>Pas de contenu multimedia disponible</p>
-                            </Box>
-                        ) : (
-                            <Box
-                            display="grid"
-                            gridTemplateColumns="repeat(2, 1fr)"
-                            gridAutoRows="150px"
-                            gap={2}
-                            w="100%"
-                            h="100%"
-                            bg="#4E4F50"
-                            color={"white"}
-                            >
-                            {messages.map((m, index) => {
-                                let fileUrl = '';
-                                let fileType = 'unknown'; // Définir fileType par défaut à 'unknown'
-                                let fileName = ''; // Définir fileName par défaut à une chaîne vide
-                                let fileExtension = ''; // Définir fileExtension par défaut à une chaîne vide
-                                if (m.file) {
-                                fileType = getFileType(m.file); // Si m.file est défini, obtenir le type de fichier
-                                fileUrl = `${apiUrl}${m.file.replace(/\\/g, '/')}`; // Si m.file est défini, obtenir l'URL du fichier
-                                fileName = m.file.split('\\').pop(); // Si m.file est défini, extraire le nom du fichier
-                                fileExtension = fileName.split('.').pop(); // Si m.file est défini, extraire l'extension du fichier
-                                }
-                                return (
-                                fileType === 'image' ? (
-                                    <a key={index} href={fileUrl} target="_blank" rel="noopener noreferrer" >
-                                    <img src={fileUrl} alt="Message content" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                    </a>
-                                ) : fileType === 'video' ? (
-                                    <video style={{ width: '100%', height: '100%', objectFit: 'cover' }}  controls>
-                                    <source src={fileUrl} type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                    </video>
-                                ) : fileType === 'document' ? (
-                                  <a key={index} href={fileUrl} target="_blank" rel="noopener noreferrer">
-    <p>{fileName.split('.')[0].substring(0, 10)}.{fileName.split('.')[1]}</p>
-                                  </a>
-                                ) : null
-                                );
-                            })}
-                            </Box>
-                        )}
-                </div>
-                <div className="drawer-header">
-                  {selectedChat.isGroupChat ? ' membres du groupe' : null}
-                <p className="user-list-membres">
-                  {selectedChat.isGroupChat ? selectedChat.users.map((u) => u.pseudo).join(', ') : null}
-                </p>                
-                </div>
-                </div>
-            </div>
-            </div>
-            )}
-            </>
+          <div className="boxfiles">
+            <Box
+              display="grid"
+              gridTemplateColumns="repeat(1, 1fr)"
+              gridAutoRows="150px"
+              gap={2}
+              w="100%"
+              h="100%"
+              bg="#4E4F50"
+              color={"white"}
+            >
+              {messages.filter(m => ['image', 'video'].includes(getFileType(m.file))).map((m, index) => {
+                let fileUrl = '';
+                if (m.file) {
+                  fileUrl = `${apiUrl}${m.file.replace(/\\/g, '/')}`;
+                }
+                return (
+                  getFileType(m.file) === 'image' ? (
+                    <a key={index} href={fileUrl} target="_blank" rel="noopener noreferrer">
+                      <img src={fileUrl} alt="Message content" style={{ width: '100%', height: '100%' }} />
+                    </a>
+                  ) : getFileType(m.file) === 'video' ? (
+                    <video style={{ width: '100%', height: '100%' }} controls>
+                      <source src={fileUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : null
+                );
+              })}
+            </Box>
+          </div>
 
+          <div className="drawer-header">Documents</div>
+
+          <div className="boxfiles">
+           <p
+            display="grid"
+            gridTemplateColumns="1fr"
+            gridAutoRows="150px"
+            gap={2}
+            w="100%"
+            h="100%"
+            bg="#4E4F50"
+            color={"white"}
+          >
+            {messages.filter(m => getFileType(m.file) === 'document').map((m, index) => {
+              let fileUrl = '';
+              let fileName = '';
+              if (m.file) {
+                fileUrl = `${apiUrl}${m.file.replace(/\\/g, '/')}`;
+                fileName = m.file.split('\\').pop();
+              }
+              return (
+                <a key={index} href={fileUrl} target="_blank" rel="noopener noreferrer">
+                  <p>{fileName.split('.')[0].substring(0, 10)}.{fileName.split('.')[1]}</p>
+                </a>
+              );
+            })}
+          </p>
+          </div>
+            
+         
+
+          <div className="drawer-header">
+            {selectedChat.isGroupChat ? ' membres du groupe' : null}
+            <p className="user-list-membres">
+              {selectedChat.isGroupChat ? selectedChat.users.map((u) => u.pseudo).join(', ') : null}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )}
+</>
     );
 };
 

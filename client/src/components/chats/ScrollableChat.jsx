@@ -78,6 +78,7 @@ function dataURItoBlob(dataURI) {
       case 'xls':
       case 'xlsx':
       case 'csv':
+      case 'odp':
         return 'document';
       case 'mp4':
       case 'avi':
@@ -150,7 +151,6 @@ function dataURItoBlob(dataURI) {
                 marginLeft: isSameSenderMargin(messages, m, i, user._id),
                 marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
                 borderRadius: m.file && fileType === 'image'  ? '20px' : (m.file ? '10px 10px 10px 0' : '20px'),
-                boxShadow: m.file && fileType === 'image' ? '0px 3px 6px #00000029' : 'none',
                 padding: m.file ? '10px 12px' : '5px 15px',
 
 
@@ -196,7 +196,6 @@ function dataURItoBlob(dataURI) {
                           <ReactPlayer
                             className='react-player'
                             url={m.content}
-                            playing
                             controls
                             width='100%'
                             height='100%'

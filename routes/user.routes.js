@@ -11,6 +11,9 @@ router.post("/register", authController.signUp);
 router.post("/login", authController.signIn);
 router.get("/logout", authController.logOut);
 
+
+router.get('/:_id/online-status', userController.getUserOnlineStatus);
+
 //user display
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.userInfo);

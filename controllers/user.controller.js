@@ -57,8 +57,9 @@ module.exports.updateUser = async (req, res) => {
   };
 
 module.exports.deleteUser = async (req, res) => {
-    if (!ObjectID.isValid(req.params.id)) 
-        return res.status(400).send("ID unknown: " + req.params.id)
+    if (!ObjectID.isValid(req.params.id)) {
+      return res.status(400).send("ID unknown: " + req.params.id)
+    }
 
     try { 
         await UserModel.deleteOne({_id: req.params.id}).exec();
@@ -69,3 +70,19 @@ module.exports.deleteUser = async (req, res) => {
     }
         
 };
+
+module.exports.getUserOnlineStatus = async (req, res) => {
+  const userId = req.params._id;
+
+  try {
+    // Obtenez l'état en ligne de l'utilisateur de votre stockage de données
+    // Cette partie dépend de la façon dont vous stockez les données
+    const isOnline = await getOnlineStatusFromDatabase(userId);
+
+    // Renvoyez l'état en ligne de l'utilisateur dans la réponse
+    res.json({ isOnline });
+  } catch (error) {
+    console.error('Failed to get user online status:', error);
+    res.status(500).send('Failed to get user online status');
+  }
+}

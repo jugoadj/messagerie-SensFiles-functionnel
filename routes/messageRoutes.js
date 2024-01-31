@@ -7,6 +7,7 @@ const {
   transferMessage,
   deleteAllMsgs,
   deleteOneMsg,
+  
 } = require("../controllers/messageControllers");
 const multer = require('multer');
 const path = require('path');
@@ -27,7 +28,9 @@ const router = express.Router();
 
 
 router.route("/:_id").post(sendMessage);
-router.route("/transfere/:_id").post(transferMessage);
+
+;router.route("/transfere/:_id").post(transferMessage);
+
 router.post("/uploads/:_id", upload.single('file'),  sendFiles); //upload.single('file') : permet de stocker l'image dans le dossier uploads
 
 //quand on fais une requête post vers /api/message/upload on va appeler la fonction sendMessage mais 

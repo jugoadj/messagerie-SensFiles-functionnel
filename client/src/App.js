@@ -7,6 +7,7 @@ import { SelectedChatProvider } from './context/ChatProvider';
 // import "./App.css";
 
 const App = () => {
+
   const [uid, setUid]= useState(null);
 
   useEffect(()=> {
@@ -28,7 +29,9 @@ const App = () => {
   return (
     <UidContext.Provider value={uid}>
         <SelectedChatProvider> 
+
             <Routes/>
+
         </SelectedChatProvider>
       </UidContext.Provider>
   );

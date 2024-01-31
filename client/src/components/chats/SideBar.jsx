@@ -15,6 +15,9 @@ import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import CreateGroupForm from "./GroupChat";
 import GroupChatModal from "./GroupChat";
+import io from "socket.io-client";
+var  socket, selectedChatCompare;
+
 
 
 
@@ -33,6 +36,7 @@ const SideBar = ({ toggleDrawer, openDrawer}) => {
 
     const apiUrl = process.env.REACT_APP_API_URL;
     const [loggedUser, setLoggedUser] = useState();//crée un état loggedUser avec une valeur initiale non définie. setLoggedUser est la fonction qui sera utilisée pour mettre à jour cet état
+        const [socketConnected, setSocketConnected] = useState(false);
 
     const uid = useContext(UidContext);
 
@@ -62,22 +66,37 @@ const SideBar = ({ toggleDrawer, openDrawer}) => {
         try {
             const response = await axios.get(`${apiUrl}api/chat/${uid}`);
             setChats(response.data);
-            console.log("uid ilehouuuuuuuuuuuuuz", uid);
-            console.log("response.data ilehouuuuuuuuuuuuuz", response.data);
+            
             setLoading(false);
+
             
         } catch (error) {
             console.error("Error fetching chats jugoooo:", error);
         }
-    }, [uid, apiUrl]);
+    }, [uid, apiUrl]); 
 
-    useEffect(() => {
-        if (uid) {
-            fetchChats();
-        }
-    }, [fetchChats, uid]);
+ useEffect(() => {
+  socket = io(apiUrl);
+  console.log(user);
+  if (user) {
+    socket.emit("setup", user);
+  } else {
+    console.log("User is not defined"); 
+  }
+  socket.on("connection", () => setSocketConnected(true));
 
+  // Changez "message received" en "message recieved"
+  socket.on("message recieved", fetchChats);
 
+  return () => {
+    socket.off("message recieved", fetchChats);
+  };
+}, [user, fetchChats, apiUrl]);
+
+useEffect(() => {
+  fetchChats(); 
+  selectedChatCompare = selectedChat;
+}, [selectedChat]);
 
 
    

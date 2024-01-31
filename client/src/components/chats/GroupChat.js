@@ -113,7 +113,7 @@ const GroupChatModal = ({ children , isOpen, onClose }) => {
               .slice(0, 5)
               .map((user) => (
                 <div key={user._id} onClick={() => handleGroup(user)}>
-                  <p>
+                  <p style={{fontSize:"20px"}}>
                     {user.pseudo}
                     {selectedUsers.some(selectedUser => selectedUser._id === user._id) && <span className="selected-indicator"></span>}
                   </p>
