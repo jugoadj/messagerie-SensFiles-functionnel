@@ -75,28 +75,12 @@ const SideBar = ({ toggleDrawer, openDrawer}) => {
         }
     }, [uid, apiUrl]); 
 
- useEffect(() => {
-  socket = io(apiUrl);
-  console.log(user);
-  if (user) {
-    socket.emit("setup", user);
-  } else {
-    console.log("User is not defined"); 
-  }
-  socket.on("connection", () => setSocketConnected(true));
 
-  // Changez "message received" en "message recieved"
-  socket.on("message recieved", fetchChats);
-
-  return () => {
-    socket.off("message recieved", fetchChats);
-  };
-}, [user, fetchChats, apiUrl]);
 
 useEffect(() => {
   fetchChats(); 
   selectedChatCompare = selectedChat;
-}, [selectedChat]);
+}, [selectedChat, uid, fetchChats]);
 
 
    

@@ -13,6 +13,7 @@ import ReactPlayer from 'react-player';
 
 
 
+
 import {
   isLastMessage,
   isSameSender,
@@ -23,12 +24,17 @@ import {
 
 const ScrollableChat = ({ messages }) => {//messages contient les donnes de l'utilisateur connecté qu'on a recupéré dans la fonction fetchMessages dans singleChat.js
     const { user } = useContext(SelectedChatContext);
-  const serverUrl = 'http://localhost:5000'; // Remplacez ceci par l'URL de votre serveur
   const [hoveredMessage, setHoveredMessage] = useState(null);
   const [clickedMessageId, setClickedMessageId] = useState(null);
 const [chatMessages, setChatMessages] = useState([]);
 
+ const apiUrl = process.env.REACT_APP_API_URL;
+
+    
+
 console.log(user)
+
+ 
   
 function dataURItoBlob(dataURI) {
   var byteString = atob(dataURI.split(',')[1]);
@@ -106,7 +112,7 @@ function dataURItoBlob(dataURI) {
             if (m.file) {
               fileType = getFileType(m.file); // Si m.file est défini, obtenir le type de fichier
 
-              fileUrl = `${serverUrl}/${m.file.replace(/\\/g, '/')}`; // Si m.file est défini, obtenir l'URL du fichier
+              fileUrl = `${apiUrl}${m.file.replace(/\\/g, '/')}`; // Si m.file est défini, obtenir l'URL du fichier
               fileName = m.file.split('\\').pop(); // Si m.file est défini, extraire le nom du fichier
               fileExtension = fileName.split('.').pop(); // Si m.file est défini, extraire l'extension du fichier
             }
@@ -137,7 +143,7 @@ function dataURItoBlob(dataURI) {
                  marginLeft: m.sender._id !== user._id ? '10px' : '0',
                 backgroundColor: `${
                   m.file ? (
-                    fileType === 'image' ? 'transparent' : 
+                    fileType === 'image' ? '#f5f5f5' : 
                     fileType === 'document' ? '#f5f5f5' : 
                     fileType === 'video' ? 'transparent' :
                     fileType === 'audio' ? 'transparent' :
@@ -164,10 +170,10 @@ function dataURItoBlob(dataURI) {
                  {m.file ? (
                     console.log(m.createdAt),
                     fileType === 'image' ? (
-                      <div style={{ position: 'relative', width: '200px' }}>
-                        <a href={`${serverUrl}/${m.file.replace(/\\/g, '/')}`} target="_blank" rel="noopener noreferrer">
+                      <div style={{ position: 'relative', width: '250px' }}>
+                        <a href={`${apiUrl}${m.file.replace(/\\/g, '/')}`} target="_blank" rel="noopener noreferrer">
                         <div style={{ position: 'relative' }} onMouseEnter={(e) => {document.getElementById(`img-${i}`).style.filter = 'blur(2px)'; document.getElementById(`date-${i}`).style.display = 'block';}} onMouseLeave={(e) => {document.getElementById(`img-${i}`).style.filter = 'none'; document.getElementById(`date-${i}`).style.display = 'none';}}>
-                          <img id={`img-${i}`} src={`${serverUrl}/${m.file.replace(/\\/g, '/')}`} alt="Message content" style={{width: "100%", transition: '0.3s'}} />
+                          <img id={`img-${i}`} src={`${apiUrl}${m.file.replace(/\\/g, '/')}`} alt="Message content" style={{width: "100%", transition: '0.3s'}} />
                           <div id={`date-${i}`} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#fff', display: 'none', color:"#111111" }}>{`send : ${new Date(m.createdAt).toLocaleString()}`}</div>
                         </div>
                       </a>
@@ -175,7 +181,7 @@ function dataURItoBlob(dataURI) {
                       ) : fileType === 'video' ? (
                         <div style={{ position: 'relative', width: '200px', borderRadius:"10px 10px 10px 10px", boxShadow:"0px 3px 6px #111111" }}>
                           <video controls style={{width: "100%", transition: '0.3s'}} onMouseOver={(e) => {e.currentTarget.style.filter = 'blur(2px)'; document.getElementById(`date-${i}`).style.display = 'block';}} onMouseOut={(e) => {e.currentTarget.style.filter = 'none'; document.getElementById(`date-${i}`).style.display = 'none';}}>
-                            <source src={`${serverUrl}/${m.file.replace(/\\/g, '/')}`} type="video/mp4" />
+                            <source src={`${apiUrl}${m.file.replace(/\\/g, '/')}`} type="video/mp4" />
                             Your browser does not support the video tag.
                             <div id={`date-${i}`} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#fff', display: 'none', color:"#111111" }}>{`send  : ${new Date(m.createdAt).toLocaleString()}`}</div>
 
@@ -184,7 +190,7 @@ function dataURItoBlob(dataURI) {
                     )  : (
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <FaFilePdf size={20} color='black' />
-                        <a href={`${serverUrl}/${m.file.replace(/\\/g, '/')}`} download>
+                        <a href={`${apiUrl}${m.file.replace(/\\/g, '/')}`} download>
                           {fileName.length > 50 ? fileName.substring(0, 30) + '...' : fileName} ({fileExtension})
                         </a>
                       </div>

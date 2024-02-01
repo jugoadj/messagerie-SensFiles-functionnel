@@ -279,19 +279,19 @@ const handleSend = (event) => {
   };
 
  
-  const checkUserOnlineStatus = async (uid) => {
-  try {
-    const response = await axios.get(`${apiUrl}api/user/${uid}/online-status`);
-    return response.data.isOnline;
-  } catch (error) {
-    console.error('Failed to check user online status:', error);
-    return false;
-  }
-};
+//   const checkUserOnlineStatus = async (uid) => {
+//   try {
+//     const response = await axios.get(`${apiUrl}api/user/${uid}/online-status`);
+//     return response.data.isOnline;
+//   } catch (error) {
+//     console.error('Failed to check user online status:', error);
+//     return false;
+//   }
+// };
 
-React.useEffect(() => {
-  checkUserOnlineStatus(uid).then(setIsOnline);
-}, [uid]);
+// React.useEffect(() => {
+//   checkUserOnlineStatus(uid).then(setIsOnline);
+// }, [uid]);
 
   
    
