@@ -179,7 +179,7 @@ function dataURItoBlob(dataURI) {
                       </a>
                       </div>
                       ) : fileType === 'video' ? (
-                        <div style={{ position: 'relative', width: '200px', borderRadius:"10px 10px 10px 10px", boxShadow:"0px 3px 6px #111111" }}>
+                        <div style={{ position: 'relative', width: '250px', borderRadius:"10px 10px 10px 10px", boxShadow:"0px 3px 6px #111111" }}>
                           <video controls style={{width: "100%", transition: '0.3s'}} onMouseOver={(e) => {e.currentTarget.style.filter = 'blur(2px)'; document.getElementById(`date-${i}`).style.display = 'block';}} onMouseOut={(e) => {e.currentTarget.style.filter = 'none'; document.getElementById(`date-${i}`).style.display = 'none';}}>
                             <source src={`${apiUrl}${m.file.replace(/\\/g, '/')}`} type="video/mp4" />
                             Your browser does not support the video tag.
@@ -196,6 +196,9 @@ function dataURItoBlob(dataURI) {
                       </div>
                     )
                   ) : (
+                    m.content.startsWith('http') ? (
+  <LinkPreviewComponent url={m.content} />
+) : (
                      
                        m.content.startsWith('data:audio') ? (
                         <div className='audio-container'>
@@ -212,7 +215,8 @@ function dataURItoBlob(dataURI) {
                         m.content
                       )
                       )
-                    }
+                  )}
+
                 
                     
               </span>
